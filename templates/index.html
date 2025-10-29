@@ -1,15 +1,31 @@
 {% extends "base.html" %}
-{% block title %}Dashboard Principal | Vendas OO{% endblock %}
+{% block title %}Dashboard Principal | TechNova Store{% endblock %}
 
 {% block content %}
 
-    <div style="margin-bottom: 40px;">
-        <p style="color: #666; font-size: 1.1em;">Descubra nossas ofertas! Clique no produto para ver detalhes (Polimorfismo de Frete) e avaliações.</p>
-    </div>
+    {% if erro_carrinho %}
+        <input type="hidden" id="aviso-carrinho-hidden" value="{{ aviso_carrinho }}">
+    {% endif %}
 
-    <h2 style="color: var(--primary-color);">✨ Produtos em Destaque</h2>
+    <div class="promo-section">
+        <h2 style="color: #E60014; border-bottom-color: #E60014;">🔥 PROMOÇÕES IMPERDÍVEIS</h2>
+        
+        <div class="promo-grid">
+            {% for pid, produto in produtos %}
+                {% if loop.index <= 5 %} 
+                    <a href="{{ url_for('detalhe_produto', pid=pid) }}" style="text-decoration: none; color: inherit;">
+                        {% include 'product_card.html' %} 
+                    </a>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
     
-    <div class="product-grid">
+    <hr style="margin: 40px 0;">
+
+    <h2 style="color: var(--primary-color);">Todos os Produtos (Geral)</h2>
+    
+    <div class="product-grid-5"> 
         {% for pid, produto in produtos %}
             <a href="{{ url_for('detalhe_produto', pid=pid) }}" style="text-decoration: none; color: inherit;">
                 {% include 'product_card.html' %} 
@@ -76,4 +92,4 @@
         
     {% endif %}
 
-{% endblock %}  
+{% endblock %}

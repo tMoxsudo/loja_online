@@ -1,15 +1,34 @@
 # Arquivo: core/avaliacao.py
 
 class Avaliacao:
-    """Classe de dados simples para ser Associada ao Produto."""
+    """Representa uma avaliação (nota e comentário) feita por um cliente."""
     def __init__(self, cliente_id, nota, comentario):
-        self.cliente_id = cliente_id
+        # Validação básica da nota
+        if not 1 <= nota <= 5:
+            raise ValueError("A nota da avaliação deve estar entre 1 e 5.")
+        
+        self.cliente_id = cliente_id # ID do cliente que avaliou (Associação)
         self.nota = nota
         self.comentario = comentario
-    
+
     def to_json(self):
-        return {'cliente_id': self.cliente_id, 'nota': self.nota, 'comentario': self.comentario}
+        """Serializa a Avaliação para JSON."""
+        return {
+            'cliente_id': self.cliente_id,
+            'nota': self.nota,
+            'comentario': self.comentario
+        }
     
     @staticmethod
     def from_json(data):
-        return Avaliacao(data['cliente_id'], data['nota'], data['comentario'])
+        """Reconstrói a Avaliação a partir do JSON."""
+        # Adiciona tratamento de erro se os dados estiverem incompletos
+        try:
+            return Avaliacao(
+                data['cliente_id'],
+                data['nota'],
+                data.get('comentario', '') # Comentário é opcional
+            )
+        except KeyError:
+            print("AVISO: Dados de avaliação incompletos. Ignorando.")
+            return None # Retorna None se os dados essenciais faltarem

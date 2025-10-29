@@ -35,49 +35,62 @@
             "preco": 8500.0,
             "categoria": "Eletr\u00f4nico",
             "peso": 15.0,
-            "imagem_url": "https://via.placeholder.com/600x400/007bff/FFFFFF?text=PC+Gamer"
+            "imagem_url": "https://via.placeholder.com/600x400/007bff/FFFFFF?text=PC+Gamer",
+            "avaliacoes": [
+                {
+                    "cliente_id": "101",
+                    "nota": 5,
+                    "comentario": "produto incrivel!!!."
+                }
+            ]
         },
         "102": {
             "nome": "Monitor Ultra",
             "preco": 1200.0,
             "categoria": "Eletr\u00f4nico",
             "peso": 5.0,
-            "imagem_url": "https://via.placeholder.com/600x400/007bff/FFFFFF?text=Monitor"
+            "imagem_url": "https://via.placeholder.com/600x400/007bff/FFFFFF?text=Monitor",
+            "avaliacoes": []
         },
         "103": {
             "nome": "Teclado Mec\u00e2nico",
             "preco": 550.0,
             "categoria": "Eletr\u00f4nico",
             "peso": 1.5,
-            "imagem_url": "https://via.placeholder.com/600x400/007bff/FFFFFF?text=Teclado"
+            "imagem_url": "https://via.placeholder.com/600x400/007bff/FFFFFF?text=Teclado",
+            "avaliacoes": []
         },
         "104": {
             "nome": "Livro O Senhor dos An\u00e9is",
             "preco": 85.0,
             "categoria": "Livro",
             "peso": 0.8,
-            "imagem_url": "https://via.placeholder.com/600x400/007bff/FFFFFF?text=Livro"
+            "imagem_url": "https://via.placeholder.com/600x400/007bff/FFFFFF?text=Livro",
+            "avaliacoes": []
         },
         "105": {
             "nome": "C\u00e2mera DSLR Canon",
             "preco": 3200.0,
             "categoria": "Eletr\u00f4nico",
             "peso": 2.0,
-            "imagem_url": "https://via.placeholder.com/600x400/007bff/FFFFFF?text=C\u00e2mera"
+            "imagem_url": "https://via.placeholder.com/600x400/007bff/FFFFFF?text=C\u00e2mera",
+            "avaliacoes": []
         },
         "106": {
             "nome": "Camiseta Esportiva",
             "preco": 79.9,
             "categoria": "Vestu\u00e1rio",
             "peso": 0.3,
-            "imagem_url": "https://via.placeholder.com/600x400/007bff/FFFFFF?text=Camiseta"
+            "imagem_url": "https://via.placeholder.com/600x400/007bff/FFFFFF?text=Camiseta",
+            "avaliacoes": []
         },
         "107": {
             "nome": "Fone Bluetooth Sony",
             "preco": 450.0,
             "categoria": "Eletr\u00f4nico",
             "peso": 0.2,
-            "imagem_url": "https://via.placeholder.com/600x400/007bff/FFFFFF?text=Fone"
+            "imagem_url": "https://via.placeholder.com/600x400/007bff/FFFFFF?text=Fone",
+            "avaliacoes": []
         }
     },
     "carrinhos": {

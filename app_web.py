@@ -6,6 +6,7 @@ from core.cliente import Cliente
 from core.carrinho import Carrinho
 from core.item_carrinho import ItemCarrinho
 from core.produto_fisico import ProdutoFisico
+from core.avaliacao import Avaliacao 
 from pagamentos.pagamento_pix import PagamentoPix
 from pagamentos.pagamento_cartao import PagamentoCartao
 from pagamentos.pagamento_boleto import PagamentoBoleto
@@ -19,12 +20,10 @@ basedir = Path(os.path.dirname(os.path.abspath(__file__)))
 app = Flask(__name__, 
             template_folder=str(basedir / 'templates'))
 
-# CHAVE SECRETA OBRIGATÓRIA PARA USAR SESSÕES
 app.secret_key = 'chave_muito_secreta_para_oo_unb' 
-app.permanent_session_lifetime = timedelta(minutes=15) # Deslogue após 15 min de inatividade
+app.permanent_session_lifetime = timedelta(minutes=15) 
 app.config.update(SESSION_PERMANENT=True)
 
-# Garante que os pacotes POO sejam encontrados
 sys.path.append(str(basedir))
 
 # Carrega os dados
@@ -54,7 +53,6 @@ def login_cadastro():
             
             cliente_logado = next((c for c in DB['clientes'].values() if c.cpf == cpf_login), None)
             
-            # Verificação de Senha e Existência
             if cliente_logado and cliente_logado.senha == senha:
                 cliente_id_logado = next((key for key, client in DB['clientes'].items() if client.cpf == cpf_login), None)
 
@@ -63,9 +61,8 @@ def login_cadastro():
                     session['user_name'] = cliente_logado.nome
                     session['is_admin'] = cliente_logado.is_admin
                     session['user_id'] = cliente_id_logado 
-                    session.permanent = True # Ativa o deslogue automático
+                    session.permanent = True 
                     
-                    print(f"\n[SUCESSO] Usuário {cliente_logado.nome} logado (ID: {cliente_id_logado}).")
                     return redirect(url_for('index'))
                 else:
                     return render_template('login_cadastro.html', erro_login="Erro interno ao buscar ID do cliente.")
@@ -114,12 +111,11 @@ def cadastrar_cliente_web():
         DB['next_ids']['cliente'] += 1
         database.salvar_dados_json(DB)
         
-        # Loga o usuário automaticamente
         session['logged_in'] = True
         session['user_name'] = novo_cliente.nome
         session['is_admin'] = False
         session['user_id'] = cliente_id 
-        session.permanent = True # Ativa o deslogue automático
+        session.permanent = True
         
         return redirect(url_for('index'))
     
@@ -133,17 +129,21 @@ def adicionar_item_processa():
     """
     Processa a adição de item vindo da página de Detalhes.
     """
-    cliente_id = session.get('user_id') 
-    cliente_atual = DB['clientes'].get(cliente_id) or DB['clientes'].get('1') 
+    # CORREÇÃO: Pega o usuário da sessão.
+    cliente_atual = get_current_user() 
+    
+    # Se não houver usuário logado, força o login.
+    if not cliente_atual:
+        return redirect(url_for('login_cadastro', erro="Você precisa estar logado para comprar."))
     
     if request.method == 'POST':
         produto_id = request.form.get('produto_id')
         quantidade = request.form.get('quantidade', type=int)
-        acao_compra = request.form.get('acao_compra') # 'compra_imediata' ou 'adicionar_carrinho'
+        acao_compra = request.form.get('acao_compra') 
         produto_obj = DB['produtos'].get(produto_id)
         
-        if not produto_obj or not quantidade or quantidade < 1 or not cliente_atual:
-            return redirect(url_for('index', erro_carrinho="Dados de compra inválidos ou cliente não encontrado."))
+        if not produto_obj or not quantidade or quantidade < 1:
+            return redirect(url_for('index', erro_carrinho="Dados de compra inválidos."))
 
         # Lógica de Carrinho Existente
         carrinhos = DB['carrinhos']
@@ -156,30 +156,28 @@ def adicionar_item_processa():
         # Decide qual carrinho usar baseado na ação
         if acao_compra == 'compra_imediata':
             novo_id = str(ultimo_id + 1)
-            carrinho_atual = Carrinho(cliente_atual)
+            carrinho_atual = Carrinho(cliente_atual) # Usa o cliente da sessão
             carrinhos[novo_id] = carrinho_atual
             DB['next_ids']['carrinho'] = int(novo_id) + 1 
         
         elif acao_compra == 'adicionar_carrinho':
-            if ultimo_carrinho and ultimo_carrinho.status == 'ABERTO':
+            if ultimo_carrinho and ultimo_carrinho.status == 'ABERTO' and ultimo_carrinho.cliente == cliente_atual:
                 carrinho_atual = ultimo_carrinho
             else:
                 novo_id = str(ultimo_id + 1)
-                carrinho_atual = Carrinho(cliente_atual)
+                carrinho_atual = Carrinho(cliente_atual) # Usa o cliente da sessão
                 carrinhos[novo_id] = carrinho_atual
                 DB['next_ids']['carrinho'] = int(novo_id) + 1 
         
-        # Adiciona o item (Composição)
         if carrinho_atual:
             item = ItemCarrinho(produto_obj, quantidade)
             carrinho_atual.adicionar_item(item) 
             database.salvar_dados_json(DB)
         
-        # Redirecionamento
         if acao_compra == 'compra_imediata':
             return redirect(url_for('checkout_web')) 
         
-        return redirect(url_for('index')) # Se for 'adicionar_carrinho', volta para a home
+        return redirect(url_for('index')) 
 
     return redirect(url_for('index'))
 
@@ -275,51 +273,48 @@ def perfil_usuario():
 
 @app.route('/pedidos')
 def pedidos_prontos():
-    """Exibe os pedidos que já foram finalizados."""
+    """Exibe os pedidos que já foram finalizados com status de entrega."""
     cliente = get_current_user()
     if not cliente:
         return redirect(url_for('login_cadastro', erro="Acesso negado. Faça login."))
         
-    pedidos = [
-        (pid, c) for pid, c in DB['carrinhos'].items() 
-        if c.status == 'PROCESSADO' and c.cliente.nome == cliente.nome
-    ]
-    
-    return render_template('pedidos.html', cliente=cliente, pedidos=pedidos)
+    # --- CORREÇÃO DO FILTRO: Usa o objeto cliente para comparação ---
+    pedidos_finalizados = []
+    for pid, c in DB['carrinhos'].items():
+        # Compara o objeto cliente do carrinho com o objeto cliente da sessão
+        if c.status == 'PROCESSADO' and c.cliente == cliente:
+            pedidos_finalizados.append((pid, c))
+
+    return render_template('pedidos.html', cliente=cliente, pedidos=pedidos_finalizados)
 
 
 # --- ROTAS ADMINISTRATIVAS ---
 
 @app.route('/admin')
 def admin_dashboard():
-    """Exibe o painel de administração com listas de modelos (Apenas para ADM)."""
+    """Exibe o painel de administração."""
     if not session.get('is_admin'):
         return redirect(url_for('index')) 
-
     return render_template('admin_dashboard.html', 
                            clientes=DB['clientes'].items(),
                            produtos=DB['produtos'].items())
 
 @app.route('/admin/editar/<pid>', methods=['GET', 'POST'])
 def admin_editar_produto(pid):
-    """Permite alterar informações de um produto existente (Update do CRUD)."""
+    """Permite alterar informações de um produto existente."""
     if not session.get('is_admin'):
         return redirect(url_for('index')) 
-        
     produto = DB['produtos'].get(pid)
     if not produto:
         return "Produto não encontrado.", 404
-
     if request.method == 'POST':
         produto.nome = request.form['nome']
         produto.preco = float(request.form['preco'])
         produto.categoria = request.form['categoria']
         produto.imagem_url = request.form['imagem_url']
         produto.peso = float(request.form['peso'])
-        
-        database.salvar_dados_json(DB) # Salva a mudança no JSON
+        database.salvar_dados_json(DB)
         return redirect(url_for('admin_dashboard'))
-        
     return render_template('admin_editar_produto.html', produto=produto, pid=pid)
 
 
@@ -332,34 +327,99 @@ def detalhe_produto(pid):
     if not produto:
         return "Produto não encontrado.", 404
         
-    avaliacoes = [
-        {'nome': 'Cliente Teste', 'nota': 5, 'comentario': 'Excelente produto!'},
-        {'nome': 'Outro User', 'nota': 4, 'comentario': 'Chegou rápido.'}
-    ]
-    
+    # Lógica para buscar o nome do cliente da avaliação
+    avaliacoes_enriquecidas = []
+    for avl in produto.avaliacoes:
+        cliente_avaliador = DB['clientes'].get(avl.cliente_id)
+        nome_avaliador = cliente_avaliador.nome if cliente_avaliador else "Usuário Anônimo"
+        
+        avaliacoes_enriquecidas.append({
+            'nome': nome_avaliador,
+            'nota': avl.nota,
+            'comentario': avl.comentario
+        })
+
     return render_template(
         'detalhe_produto.html',
         produto=produto,
         pid=pid,
-        frete=produto.calcular_frete(),
-        avaliacoes=avaliacoes
+        frete=produto.calcular_frete(), # Polimorfismo
+        avaliacoes=avaliacoes_enriquecidas # Passa a lista com nomes
     )
+
+@app.route('/produto/<pid>/avaliar', methods=['POST']) 
+def avaliar_produto(pid):
+    """Processa o formulário de avaliação do produto."""
+    cliente = get_current_user()
+    if not cliente:
+        return redirect(url_for('login_cadastro', erro="Faça login para avaliar."))
+        
+    produto = DB['produtos'].get(pid)
+    if not produto:
+        return "Produto não encontrado.", 404
+        
+    if request.method == 'POST':
+        try:
+            nota = request.form.get('nota', type=int)
+            comentario = request.form.get('comentario', '')
+            
+            nova_avaliacao = Avaliacao(cliente_id=session['user_id'], nota=nota, comentario=comentario)
+            
+            produto.adicionar_avaliacao(nova_avaliacao)
+            database.salvar_dados_json(DB) 
+            
+            return redirect(url_for('detalhe_produto', pid=pid))
+            
+        except ValueError as e: 
+            return render_template(
+                'detalhe_produto.html',
+                produto=produto, pid=pid, frete=produto.calcular_frete(),
+                avaliacoes=produto.avaliacoes, 
+                erro_avaliacao=str(e) 
+            )
+        except Exception as e:
+            return f"Erro ao processar avaliação: {e}", 500
+
+    return redirect(url_for('detalhe_produto', pid=pid))
+
 
 @app.route('/busca')
 def busca():
-    """Exibe a página de busca, permitindo filtros."""
+    """
+    Exibe a página de busca, permitindo filtros por termo, categoria e preço.
+    """
     termo = request.args.get('termo', '')
-    
-    produtos_filtrados = [
-        (pid, p) for pid, p in DB['produtos'].items() 
-        if termo.lower() in p.nome.lower() or not termo
-    ]
+    categoria_filtro = request.args.get('categoria', '') 
+    preco_max_filtro_str = request.args.get('preco_max', '') 
+    avaliacao_min_filtro = request.args.get('avaliacao_min', type=int, default=1) 
+
+    preco_max_filtro = None
+    if preco_max_filtro_str:
+        try:
+            preco_max_filtro = float(preco_max_filtro_str)
+        except ValueError:
+            pass 
+
+    produtos_filtrados = []
+    for pid, p in DB['produtos'].items():
+        match_termo = termo.lower() in p.nome.lower() or not termo
+        match_categoria = p.categoria.lower() == categoria_filtro.lower() if categoria_filtro else True
+        match_preco = p.preco <= preco_max_filtro if preco_max_filtro is not None else True
+        media_avaliacao = p.calcular_media_avaliacoes()
+        match_avaliacao = media_avaliacao >= avaliacao_min_filtro
+        
+        if match_termo and match_categoria and match_preco and match_avaliacao:
+            produtos_filtrados.append((pid, p))
+            
     
     return render_template(
         'busca.html',
         produtos=produtos_filtrados,
-        categorias=['Eletrônico', 'Livro', 'Vestuário'],
-        termo=termo
+        categorias=['Eletrônico', 'Livro', 'Vestuário', 'Móveis', 'Acessório', 'Informática'], 
+        termo=termo,
+        categoria_selecionada=categoria_filtro,
+        preco_max_selecionado=preco_max_filtro_str,
+        avaliacao_min_selecionada=avaliacao_min_filtro
     )
 
 

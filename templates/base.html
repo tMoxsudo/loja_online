@@ -15,6 +15,7 @@
             --bg-light: #f4f7f6;
             --header-bg: #212121; /* Cinza escuro */
             --nav-link: #f0f0f0; /* Cor do link no menu de categorias */
+            --promo-bg: #e9ecef; /* Fundo claro para a seção de promoções */
         }
 
         body { 
@@ -137,13 +138,21 @@
         .success { background-color: #28a745; color: white; }
         .success:hover { background-color: #1e7e34; }
         
-        /* Grid de Produtos */
+        /* Layout de Grid de Produtos (usado em index.html) */
         .product-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             gap: 20px;
         }
         
+        /* NOVO: Grid com EXATAMENTE 5 colunas */
+        .product-grid-5 {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr); /* Força 5 colunas */
+            gap: 20px; /* Espaçamento entre os cards */
+            margin-top: 20px;
+        }
+
         /* Card de Produto */
         .product-card {
             background-color: white;
@@ -153,12 +162,16 @@
             text-decoration: none;
             color: var(--text-color);
             overflow: hidden;
+            display: flex; /* Para alinhamento interno */
+            flex-direction: column;
         }
         .product-card:hover {
             transform: translateY(-4px);
             box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
         }
-        .product-info { padding: 15px; }
+        .product-info { padding: 15px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        
+        /* NOVO: Tag de Categoria */
         .category-tag {
             display: inline-block;
             background-color: var(--primary-color); 
@@ -170,28 +183,32 @@
             margin-right: 5px;
             text-transform: uppercase;
         }
-        .promo-tag {
+        .promo-tag { /* Mantém o estilo da tag de promoção */
             display: inline-block; background-color: #dc3545; color: white; padding: 3px 8px; border-radius: 4px; font-size: 0.8em; font-weight: 700; margin-bottom: 5px;
         }
-
-        /* Tabela */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-            background-color: white;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        
+        /* NOVO: Seção de Promoções */
+        .promo-section {
+            background-color: var(--promo-bg);
+            padding: 30px;
+            margin-bottom: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
-        th, td {
-            border: 1px solid #eee;
-            padding: 12px;
-            text-align: left;
-        }
-        th {
-            background-color: #f8f8f8;
-            font-weight: 500;
+        .promo-section h2 {
             color: var(--primary-color);
+            border-bottom: 2px solid var(--secondary-color);
         }
+        .promo-grid { /* Grid para os itens de promoção (5 colunas) */
+            display: grid;
+            grid-template-columns: repeat(5, 1fr); 
+            gap: 20px;
+        }
+        
+        /* Tabela */
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; background-color: white; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); }
+        th, td { border: 1px solid #eee; padding: 12px; text-align: left; }
+        th { background-color: #f8f8f8; font-weight: 500; color: var(--primary-color); }
         
         /* Footer */
         footer { text-align: center; padding: 20px; margin-top: 50px; background-color: var(--header-bg); color: #aaa; font-size: 0.8em; }
@@ -237,8 +254,11 @@
         <div class="container" style="max-width: 1200px;">
             <a href="{{ url_for('busca') }}">Departamentos</a>
             <a href="{{ url_for('busca', categoria='Eletrônico') }}">Eletrônicos</a>
-            <a href="{{ url_for('busca', categoria='Vestuario') }}">Móveis</a>
-            <a href="{{ url_for('busca', categoria='Livro') }}">Informática</a>
+            <a href="{{ url_for('busca', categoria='Móveis') }}">Móveis</a>
+            <a href="{{ url_for('busca', categoria='Livro') }}">Livros</a>
+            <a href="{{ url_for('busca', categoria='Vestuário') }}">Vestuário</a>
+            <a href="{{ url_for('busca', categoria='Acessório') }}">Acessórios</a>
+            <a href="{{ url_for('busca', categoria='Informática') }}">Informática</a>
             {% if session.get('is_admin') %}
                 <a href="{{ url_for('admin_dashboard') }}" style="color: #dc3545; font-weight: 700;">ADMINISTRATIVO</a>
             {% endif %}
@@ -247,7 +267,7 @@
     
     <div class="container">
         {% block content %}
-            {% endblock %}
+        {% endblock %}
     </div>
 
     <footer>
