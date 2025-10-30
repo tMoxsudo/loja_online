@@ -1,77 +1,106 @@
 {% extends "base.html" %}
-{% block title %}Login ou Cadastro{% endblock %}
+{% block title %}Login ou Cadastro | TechNova Store{% endblock %}
 
 {% block content %}
 
     <style>
-        /* Estilos locais para a tela de autenticação */
-        .auth-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr; 
-            gap: 40px;
-            margin-top: 40px;
-        }
-        .auth-box {
-            background-color: white;
+        /* CSS específico para a página de autenticação */
+        .auth-page-wrapper {
+            max-width: 800px; /* Define a largura máxima das caixas */
+            margin: 40px auto; /* Centraliza na página */
+            background: var(--bg-white);
             padding: 30px;
             border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .auth-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* Duas colunas iguais */
+            gap: 40px;
+            margin-top: 20px;
+        }
+        .auth-box {
+            background-color: #fdfdfd;
+            padding: 25px;
+            border-radius: 8px;
+            border: 1px solid #eee;
         }
         .auth-box h3 {
             color: var(--primary-color);
-            border-bottom: 2px solid #eee;
+            border-bottom: 2px solid var(--bg-light);
             padding-bottom: 10px;
-            margin-bottom: 20px;
+            margin-top: 0;
         }
-        .auth-box input[type="text"], .auth-box input[type="password"] {
-            width: 90%;
+        .auth-box p {
+            font-size: 0.9em;
+            color: var(--text-light);
+        }
+        
+        /* Estilo dos campos do formulário */
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: 500; }
+        .form-group input[type="text"], 
+        .form-group input[type="password"] {
+            width: 100%;
             padding: 10px;
-            margin-bottom: 15px;
             border: 1px solid #ccc;
             border-radius: 4px;
+            box-sizing: border-box; /* Garante que o padding não quebre o layout */
         }
+        
         .auth-box .btn {
             width: 100%;
             padding: 12px;
             margin-top: 10px;
+            font-size: 1em;
         }
         .error-message {
             color: #dc3545;
             font-weight: 500;
-            margin-top: 10px;
+            background-color: #f8d7da;
+            padding: 10px;
+            border-radius: 4px;
         }
     </style>
 
-    <h2>Acesse sua conta ou cadastre-se</h2>
-    
-    {% if erro_login %}
-        <p class="error-message">⚠️ Erro ao fazer Login: {{ erro_login }}</p>
-    {% endif %}
-
-    <div class="auth-container">
+    <div class="auth-page-wrapper">
+        <h2>Acesse sua conta ou cadastre-se</h2>
         
-        <div class="auth-box">
-            <h3>Fazer Login</h3>
-            <p>Entre com seu CPF (Login) e Senha. Use CPF **999.999.999-99** e Senha **admin** para acesso ADM.</p>
+        {% if erro_login %}
+            <p class="error-message">⚠️ Erro ao fazer Login: {{ erro_login }}</p>
+        {% endif %}
+
+        <div class="auth-container">
             
-            <form method="POST" action="{{ url_for('login_cadastro') }}">
-                <input type="text" name="cpf_login" placeholder="CPF ou E-mail" required>
-                <input type="password" name="senha_login" placeholder="Senha" required>
+            <div class="auth-box">
+                <h3>Fazer Login</h3>
+                <p>Entre com seu CPF (Login) e Senha. Use CPF **999.999.999-99** e Senha **admin** para acesso ADM.</p>
                 
-                <button type="submit" name="acao" value="login" class="btn" style="background-color: var(--primary-color); color: white;">Entrar</button>
-            </form>
-        </div>
+                <form method="POST" action="{{ url_for('login_cadastro') }}">
+                    <div class="form-group">
+                        <label for="cpf_login">CPF:</label>
+                        <input type="text" id="cpf_login" name="cpf_login" placeholder="CPF (Ex: 000.111.222-33)" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="senha_login">Senha:</label>
+                        <input type="password" id="senha_login" name="senha_login" placeholder="Senha" required>
+                    </div>
+                    
+                    <button type="submit" name="acao" value="login" class="btn" style="background-color: var(--primary-color); color: white;">Entrar</button>
+                </form>
+            </div>
 
-        <div class="auth-box">
-            <h3>Primeiro Acesso?</h3>
-            <p>Crie sua conta para começar a fazer pedidos (Teste de Herança).</p>
-            
-            <form method="POST" action="{{ url_for('login_cadastro') }}">
-                <button type="submit" name="acao" value="cadastro" class="btn success">
-                    Criar Minha Conta
-                </button>
-            </form>
-        </div>
+            <div class="auth-box">
+                <h3>Primeiro Acesso?</h3>
+                <p>Crie sua conta para começar a fazer pedidos (Teste de Herança).</p>
+                
+                <form method="POST" action="{{ url_for('login_cadastro') }}">
+                    <button type="submit" name="acao" value="cadastro" class="btn success">
+                        Criar Minha Conta
+                    </button>
+                </form>
+            </div>
 
+        </div>
     </div>
 {% endblock %}

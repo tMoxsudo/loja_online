@@ -27,6 +27,20 @@
             "endereco": "taguatinga norte, ql 37 casa 18",
             "senha": "sauhan",
             "is_admin": false
+        },
+        "102": {
+            "nome": "sauhan",
+            "cpf": "619.904.329-10",
+            "endereco": "RECANTO",
+            "senha": "SUNSHINEGAY",
+            "is_admin": false
+        },
+        "103": {
+            "nome": "gustavo abilada",
+            "cpf": "0000",
+            "endereco": "taguatinga norte ",
+            "senha": "gustabo",
+            "is_admin": false
         }
     },
     "produtos": {
@@ -41,6 +55,11 @@
                     "cliente_id": "101",
                     "nota": 5,
                     "comentario": "produto incrivel!!!."
+                },
+                {
+                    "cliente_id": "101",
+                    "nota": 5,
+                    "comentario": "incr\u00edvel de mais!!!"
                 }
             ]
         },
@@ -94,10 +113,102 @@
         }
     },
     "carrinhos": {
-        "1": null
+        "1": {
+            "cliente_id": "102",
+            "itens": [
+                {
+                    "produto_data": {
+                        "nome": "PC Gamer RTX",
+                        "preco": 8500.0,
+                        "categoria": "Eletr\u00f4nico",
+                        "peso": 15.0,
+                        "imagem_url": "https://via.placeholder.com/600x400/007bff/FFFFFF?text=PC+Gamer",
+                        "avaliacoes": [
+                            {
+                                "cliente_id": "101",
+                                "nota": 5,
+                                "comentario": "produto incrivel!!!."
+                            }
+                        ]
+                    },
+                    "quantidade": 231000000000000000000000000000000000000000000000000000000000000
+                }
+            ],
+            "status": "PROCESSADO",
+            "status_entrega": "Pedido recebido",
+            "codigo_rastreio": null
+        },
+        "2": {
+            "cliente_id": "103",
+            "itens": [
+                {
+                    "produto_data": {
+                        "nome": "Monitor Ultra",
+                        "preco": 1200.0,
+                        "categoria": "Eletr\u00f4nico",
+                        "peso": 5.0,
+                        "imagem_url": "https://via.placeholder.com/600x400/007bff/FFFFFF?text=Monitor",
+                        "avaliacoes": []
+                    },
+                    "quantidade": 1
+                }
+            ],
+            "status": "PROCESSADO",
+            "status_entrega": "Preparando envio",
+            "codigo_rastreio": null
+        },
+        "3": {
+            "cliente_id": "103",
+            "itens": [
+                {
+                    "produto_data": {
+                        "nome": "Monitor Ultra",
+                        "preco": 1200.0,
+                        "categoria": "Eletr\u00f4nico",
+                        "peso": 5.0,
+                        "imagem_url": "https://via.placeholder.com/600x400/007bff/FFFFFF?text=Monitor",
+                        "avaliacoes": []
+                    },
+                    "quantidade": 1
+                }
+            ],
+            "status": "PROCESSADO",
+            "status_entrega": "Aguardando coleta",
+            "codigo_rastreio": "BRPGFGE9AU1B4BR"
+        },
+        "4": {
+            "cliente_id": "101",
+            "itens": [
+                {
+                    "produto_data": {
+                        "nome": "PC Gamer RTX",
+                        "preco": 8500.0,
+                        "categoria": "Eletr\u00f4nico",
+                        "peso": 15.0,
+                        "imagem_url": "https://via.placeholder.com/600x400/007bff/FFFFFF?text=PC+Gamer",
+                        "avaliacoes": [
+                            {
+                                "cliente_id": "101",
+                                "nota": 5,
+                                "comentario": "produto incrivel!!!."
+                            },
+                            {
+                                "cliente_id": "101",
+                                "nota": 5,
+                                "comentario": "incr\u00edvel de mais!!!"
+                            }
+                        ]
+                    },
+                    "quantidade": 1
+                }
+            ],
+            "status": "PROCESSADO",
+            "status_entrega": "Preparando envio",
+            "codigo_rastreio": null
+        }
     },
     "next_ids": {
-        "cliente": 102,
-        "carrinho": 2
+        "cliente": 104,
+        "carrinho": 5
     }
 }

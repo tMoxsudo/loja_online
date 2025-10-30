@@ -1,5 +1,5 @@
 <div class="product-card">
-    <img src="{{ produto.imagem_url }}" alt="{{ produto.nome }}" class="product-img" style="width: 100%; height: 200px; object-fit: cover; border-top-left-radius: 8px; border-top-right-radius: 8px; background-color: #f0f0f0;">
+    <img src="{{ produto.imagem_url }}" alt="{{ produto.nome }}" class="product-img" style="width: 100%; height: 180px; object-fit: cover; background-color: #f0f0f0;">
     
     <div class="product-info" style="padding: 15px;">
         
@@ -9,17 +9,16 @@
             <span class="promo-tag" style="background-color: #dc3545; color: white;">PROMOÇÃO!</span>
         {% endif %}
         
-        <h3 style="font-size: 1.1em; margin: 8px 0 10px 0; height: 40px; overflow: hidden;">{{ produto.nome }}</h3>
+        <h3 style="font-size: 1.1em; margin: 8px 0 10px 0; height: 40px; overflow: hidden; font-weight: 400;">{{ produto.nome }}</h3>
         
-        <p class="product-rating" style="color: gold; font-size: 1em; margin: 5px 0 0 0;">★★★★☆ (4.5)</p>
+        <p class="product-rating" style="color: gold; font-size: 1em; margin: 5px 0 0 0;">
+            {{ "★" * (produto.calcular_media_avaliacoes() | round(0, 'floor') | int) }}{{ "☆" * (5 - (produto.calcular_media_avaliacoes() | round(0, 'floor') | int)) }} 
+            ({{ produto.calcular_media_avaliacoes() }})
+        </p>
         
-        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #eee; padding-top: 10px; margin-top: 10px;">
-            <div>
-                <p class="product-price" style="font-size: 1.6em; font-weight: 700; color: var(--primary-color); margin: 0;">R$ {{ "%.2f"|format(produto.preco) }}</p>
-                <p style="font-size: 0.8em; color: #666; margin: 0;">Frete: R$ {{ "%.2f"|format(produto.calcular_frete()) }}</p>
-            </div>
-            
-            <a href="{{ url_for('detalhe_produto', pid=pid) }}" class="btn" style="background-color: var(--secondary-color); font-size: 0.9em; padding: 8px 12px;">Detalhes</a>
+        <div style="border-top: 1px solid #eee; padding-top: 10px; margin-top: 10px;">
+            <p class="product-price" style="font-size: 1.6em; font-weight: 700; color: var(--primary-color); margin: 0;">R$ {{ "%.2f"|format(produto.preco) }}</p>
+            <p style="font-size: 0.8em; color: var(--text-light); margin: 0;">Frete: R$ {{ "%.2f"|format(produto.calcular_frete()) }}</p>
         </div>
         
     </div>
