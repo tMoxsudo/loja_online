@@ -2,36 +2,51 @@
 {% block title %}Meu Perfil{% endblock %}
 
 {% block content %}
-    <h1>Meu Perfil (Cliente: {{ cliente.nome }})</h1>
+<div class="container" style="max-width: 720px;">
     
+    <div class="text-center mb-4">
+        <h2><i class="fas fa-user-edit me-2"></i>Meu Perfil</h2>
+        <p class="lead text-muted">Aqui você pode alterar os dados do seu objeto Cliente (ID: {{ session.get('user_id') }}).</p>
+    </div>
+
     {% if sucesso %}
-        <div style="padding: 15px; background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; border-radius: 4px; margin-bottom: 20px;">
-            {{ sucesso }}
+        <div class="alert alert-success" role="alert">
+            <i class="fas fa-check-circle me-2"></i> {{ sucesso }}
         </div>
     {% endif %}
 
-    <form method="POST" action="{{ url_for('perfil_usuario') }}" style="max-width: 500px; padding: 20px; border: 1px solid #ccc; border-radius: 8px; background-color: white;">
-        
-        <div style="margin-bottom: 15px;">
-            <label for="nome" style="display: block; margin-bottom: 5px; font-weight: bold;">Nome Completo:</label>
-            <input type="text" id="nome" name="nome" value="{{ cliente.nome }}" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
-        </div>
+    <div class="card shadow-sm">
+        <div class="card-body p-4 p-md-5">
+            
+            <form method="POST" action="{{ url_for('perfil_usuario') }}">
+                
+                <div class="mb-3">
+                    <label for="nome" class="form-label fw-bold">Nome Completo:</label>
+                    <input type="text" id="nome" name="nome" value="{{ cliente.nome }}" class="form-control" required>
+                </div>
 
-        <div style="margin-bottom: 15px;">
-            <label for="cpf" style="display: block; margin-bottom: 5px; font-weight: bold;">CPF (Não Editável):</label>
-            <input type="text" id="cpf" value="{{ cliente.cpf }}" disabled style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; background-color: #eee;">
-        </div>
+                <div class="mb-3">
+                    <label for="cpf" class="form-label fw-bold">CPF (Não Editável):</label>
+                    <input type="text" id="cpf" value="{{ cliente.cpf }}" class="form-control" disabled readonly>
+                </div>
 
-        <div style="margin-bottom: 15px;">
-            <label for="endereco" style="display: block; margin-bottom: 5px; font-weight: bold;">Endereço de Entrega:</label>
-            <input type="text" id="endereco" name="endereco" value="{{ cliente.endereco }}" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
-        </div>
-        
-        <div style="margin-bottom: 25px;">
-            <label for="senha" style="display: block; margin-bottom: 5px; font-weight: bold;">Nova Senha (Deixe em branco para não alterar):</label>
-            <input type="password" id="senha" name="senha" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
-        </div>
+                <div class="mb-3">
+                    <label for="endereco" class="form-label fw-bold">Endereço de Entrega:</label>
+                    <input type="text" id="endereco" name="endereco" value="{{ cliente.endereco }}" class="form-control" required>
+                </div>
+                
+                <div class="mb-4">
+                    <label for="senha" class="form-label fw-bold">Nova Senha:</label>
+                    <input type="password" id="senha" name="senha" class="form-control" placeholder="Deixe em branco para não alterar">
+                </div>
 
-        <button type="submit" class="btn success" style="width: 100%; padding: 12px; font-size: 1.1em;">Salvar Alterações</button>
-    </form>
+                <button type="submit" class="btn btn-success btn-lg w-100 fw-bold">
+                    <i class="fas fa-save me-2"></i>
+                    Salvar Alterações
+                </button>
+            </form>
+
+        </div>
+    </div>
+</div>
 {% endblock %}

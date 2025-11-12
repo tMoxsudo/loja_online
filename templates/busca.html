@@ -2,55 +2,72 @@
 {% block title %}Busca e Filtros Avançados{% endblock %}
 
 {% block content %}
-    <h2 style="color: var(--primary-color);">Busca Avançada de Produtos</h2>
-    <p>Utilize os filtros abaixo para refinar sua pesquisa por preço, avaliação e características.</p>
 
-    <form method="GET" action="{{ url_for('busca') }}" class="filter-form" style="background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-bottom: 30px;">
-        
-        <div style="display: flex; gap: 20px; align-items: flex-end; flex-wrap: wrap;">
-            
-            <div style="flex-grow: 1; min-width: 250px;">
-                <label style="font-weight: 600;">Pesquisa por Nome:</label>
-                <input type="text" name="termo" placeholder="Nome do produto..." value="{{ termo }}" style="width: 100%; padding: 8px;">
-            </div>
-
-            <div style="width: 200px;">
-                <label style="font-weight: 600;">Tipo de Produto:</label>
-                <select name="categoria" style="width: 100%; padding: 10px; border: 1px solid #ccc;">
-                    <option value="">Todas as Categorias</option>
-                    {% for cat in categorias %}
-                        <option value="{{ cat }}">{{ cat }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-
-            <div style="width: 150px;">
-                <label style="font-weight: 600;">Preço Máximo:</label>
-                <input type="number" name="preco_max" placeholder="Ex: 5000" style="width: 90%; padding: 8px;">
-            </div>
-
-            <div style="width: 150px;">
-                <label style="font-weight: 600;">Avaliação Mínima:</label>
-                <select name="avaliacao_min" style="width: 100%; padding: 10px; border: 1px solid #ccc;">
-                    <option value="1">1 estrela</option>
-                    <option value="3">3 estrelas ou mais</option>
-                    <option value="4" selected>4 estrelas ou mais</option>
-                </select>
-            </div>
-
-            <button type="submit" class="btn success" style="padding: 10px 20px;">Aplicar Filtros</button>
-        </div>
-    </form>
-    
-    <hr>
-    <h3>Resultados da Busca ({{ produtos | length }} encontrados)</h3>
-
-    <div class="product-grid">
-        {% for pid, produto in produtos %}
-            <a href="{{ url_for('detalhe_produto', pid=pid) }}" style="text-decoration: none; color: inherit;">
-                {% include 'product_card.html' %} 
-            </a>
-        {% endfor %}
+    <div class="mb-4">
+        <h2><i class="fas fa-search-plus me-2"></i>Busca Avançada de Produtos</h2>
+        <p class="lead text-muted">Utilize os filtros abaixo para refinar sua pesquisa.</p>
     </div>
 
-{% endblock %}
+    <div class="row g-4">
+
+        <div class="col-lg-3">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-filter me-2"></i>Filtros</h5>
+                </div>
+                <div class="card-body">
+                    <form method="GET" action="{{ url_for('busca') }}">
+                        
+                        <div class="mb-3">
+                            <label for="termo" class="form-label fw-bold">Pesquisa por Nome:</label>
+                            <input type="text" class="form-control" id="termo" name="termo" placeholder="Nome do produto..." value="{{ termo }}">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="categoria" class="form-label fw-bold">Tipo de Produto:</label>
+                            <select name="categoria" id="categoria" class="form-select">
+                                <option value="">Todas as Categorias</option>
+                                {% for cat in categorias %}
+                                    <option value="{{ cat }}">{{ cat }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="preco_max" class="form-label fw-bold">Preço Máximo:</label>
+                            <input type="number" class="form-control" id="preco_max" name="preco_max" placeholder="Ex: 5000">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="avaliacao_min" class="form-label fw-bold">Avaliação Mínima:</label>
+                            <select name="avaliacao_min" id="avaliacao_min" class="form-select">
+                                <option value="1">1 estrela ou mais</option>
+                                <option value="3">3 estrelas ou mais</option>
+                                <option value="4" selected>4 estrelas ou mais</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-success w-100 fw-bold mt-2">
+                            <i class="fas fa-check me-2"></i>Aplicar Filtros
+                        </button>
+
+                    </form>
+                </div> </div> </div> <div class="col-lg-9">
+            <h3 class="mb-3">Resultados ({{ produtos | length }} encontrados)</h3>
+            <hr>
+
+            <div class="product-grid">
+                {% if not produtos %}
+                    <div class="col-12">
+                        <div class="alert alert-warning" role="alert">
+                            <i class="fas fa-exclamation-triangle me-2"></i>Nenhum produto encontrado com estes filtros.
+                        </div>
+                    </div>
+                {% else %}
+                    {% for pid, produto in produtos %}
+                        <a href="{{ url_for('detalhe_produto', pid=pid) }}" style="text-decoration: none; color: inherit;">
+                            {% include 'product_card.html' %} 
+                        </a>
+                    {% endfor %}
+                {% endif %}
+            </div> </div> </div> {% endblock %}

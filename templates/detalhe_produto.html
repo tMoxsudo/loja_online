@@ -1,116 +1,123 @@
 {% extends "base.html" %}
-{% block title %}Detalhes do Produto{% endblock %}
+{% block title %}Detalhes de {{ produto.nome }}{% endblock %}
 
 {% block content %}
     
-    <a href="{{ url_for('index') }}" style="margin-bottom: 25px; display: inline-block; color: var(--primary-color); text-decoration: none;">← Voltar ao Catálogo</a>
+    <a href="{{ url_for('index') }}" class="btn btn-outline-secondary mb-3">
+        <i class="fas fa-arrow-left me-2"></i> Voltar ao Catálogo
+    </a>
 
-    <div class="product-page-layout">
+    <div class="row g-4 g-lg-5">
         
-        <div class="media-column">
-            <img src="{{ produto.imagem_url }}" alt="{{ produto.nome }}" class="main-product-image" style="width: 100%; border-radius: 8px;">
+        <div class="col-lg-5">
+            <img src="{{ produto.imagem_url }}" alt="{{ produto.nome }}" class="img-fluid rounded shadow-sm w-100">
             
-            <div class="thumbnails">
-                <img src="{{ produto.imagem_url }}" alt="Mini 1" class="thumbnail-item" style="opacity: 0.5;">
-                <img src="https://via.placeholder.com/100x70.png" alt="Mini 2" class="thumbnail-item">
-                <img src="https://via.placeholder.com/100x70.png" alt="Mini 3" class="thumbnail-item">
-                <span class="thumbnail-more">+3</span>
+            <div class="d-flex mt-3">
+                <img src="{{ produto.imagem_url }}" alt="Mini 1" class="img-thumbnail me-2" style="width: 70px; height: 50px; object-fit: cover; opacity: 0.5;">
+                <img src="https://via.placeholder.com/100x70.png" alt="Mini 2" class="img-thumbnail me-2" style="width: 70px; height: 50px; object-fit: cover;">
+                <img src="https://via.placeholder.com/100x70.png" alt="Mini 3" class="img-thumbnail me-2" style="width: 70px; height: 50px; object-fit: cover;">
             </div>
 
-            <div class="product-characteristics">
-                <h3 style="color: var(--primary-color);">Características do Produto</h3>
-                <p><strong>Categoria (Herança):</strong> <span class="category-tag">{{ produto.categoria }}</span></p>
-                <p><strong>Peso para Frete:</strong> {{ "%.1f"|format(produto.peso) }} kg</p>
-                <p><strong>Cód. Modelo:</strong> {{ pid }}</p>
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Características (POO)</h5>
+                </div>
+                <div class="card-body">
+                    <p class="mb-1"><strong>Herança:</strong> <span class="badge" style="background-color: var(--cor-primaria);">{{ produto.categoria }}</span></p>
+                    <p class="mb-1"><strong>Peso p/ Frete:</strong> {{ "%.1f"|format(produto.peso) }} kg</p>
+                    <p class="mb-0"><strong>Cód. Modelo:</strong> {{ pid }}</p>
+                </div>
             </div>
         </div>
 
-        <div class="info-column">
+        <div class="col-lg-7">
             
             <h1>{{ produto.nome }}</h1>
             
-            <div class="rating-bar" style="margin-bottom: 15px;">
-                <span class="product-rating-large" style="color: gold;">{{ "★" * (produto.calcular_media_avaliacoes() | round(0, 'floor') | int) }}{{ "☆" * (5 - (produto.calcular_media_avaliacoes() | round(0, 'floor') | int)) }}</span>
-                <span style="font-size: 0.9em; color: #666;">({{ produto.calcular_media_avaliacoes() }}/5) | {{ avaliacoes | length }} avaliações</span>
+            <div class="mb-3">
+                <span class="text-warning">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star-half-alt"></i>
+                </span>
+                <span class="text-muted">(5.0) | {{ avaliacoes | length }} avaliações</span>
             </div>
 
-            <div class="price-section">
-                <p style="color: #666; text-decoration: line-through; font-size: 1.1em; margin-bottom: 5px;">R$ {{ "%.2f"|format(produto.preco * 1.32) }}</p>
-                <p style="color: #28a745; font-size: 1.1em; font-weight: 500; margin-top: 5px;">Baixou 32%</p>
-                
-                <h2 class="final-price-tag">R$ {{ "%.2f"|format(produto.preco) }}</h2>
-                
-                <p style="color: #28a745; font-weight: 500; font-size: 0.9em;">10x de R$ {{ "%.2f"|format(produto.preco / 10) }} sem juros no cartão.</p>
+            <div class="bg-light p-3 rounded mb-3">
+                <p class="text-muted text-decoration-line-through mb-1">R$ {{ "%.2f"|format(produto.preco * 1.32) }} (32% OFF)</p>
+                <h2 class="fw-bold mb-1" style="color: var(--cor-primaria);">R$ {{ "%.2f"|format(produto.preco) }}</h2>
+                <p class="text-success fw-bold mb-0">10x de R$ {{ "%.2f"|format(produto.preco / 10) }} sem juros</p>
             </div>
 
-            <form method="POST" action="{{ url_for('adicionar_item_processa') }}" style="margin-top: 30px;">
+            <form method="POST" action="{{ url_for('adicionar_item_processa') }}" class="mt-4">
                 
                 <input type="hidden" name="produto_id" value="{{ pid }}"> 
                 
-                <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-                    
-                    <label for="quantidade_input">Qtde:</label>
-                    <input type="number" id="quantidade_input" name="quantidade" value="1" min="1" style="width: 60px; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
-                    
-                    <button type="submit" name="acao_compra" value="compra_imediata" class="btn success" style="padding: 15px 25px;">COMPRAR AGORA</button> 
-                    
-                    <button type="submit" name="acao_compra" value="adicionar_carrinho" class="btn" style="background-color: var(--secondary-color); color: var(--primary-color); padding: 15px 25px;">ADICIONAR AO CARRINHO</button>
+                <div class="input-group input-group-lg mb-3" style="max-width: 200px;">
+                    <span class="input-group-text">Qtde:</span>
+                    <input type="number" id="quantidade_input" name="quantidade" value="1" min="1" class="form-control text-center">
+                </div>
+                
+                <div class="d-grid gap-2 d-md-flex">
+                    <button type="submit" name="acao_compra" value="compra_imediata" class="btn btn-success btn-lg flex-grow-1 fw-bold">
+                        <i class="fas fa-bolt me-2"></i> COMPRAR AGORA
+                    </button> 
+                    <button type="submit" name="acao_compra" value="adicionar_carrinho" class="btn btn-search-custom btn-lg flex-grow-1 fw-bold">
+                        <i class="fas fa-cart-plus me-2"></i> ADICIONAR AO CARRINHO
+                    </button>
                 </div>
             </form>
             
-            <hr style="margin: 30px 0;">
+            <hr class="my-4">
 
             <div class="shipping-info">
-                <h3>Calcule o frete</h3>
-                <div style="padding: 15px; border: 1px solid #ddd; border-radius: 4px; background-color: #f8f8f8;">
-                    <p style="font-weight: 500; margin: 0;">Valor do Frete (Lógica Polimórfica):</p>
-                    <p style="font-size: 1.2em; color: var(--primary-color); margin: 5px 0 0 0;">R$ {{ "%.2f"|format(frete) }}</p>
+                <h5><i class="fas fa-truck me-2"></i>Calcule o frete e prazo</h5>
+                <div class="border rounded p-3 bg-light">
+                    <p class="fw-bold mb-1">Valor do Frete (Lógica Polimórfica):</p>
+                    <p class="h4 text-dark mb-0">R$ {{ "%.2f"|format(frete) }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr class="my-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <h2><i class="fas fa-comments me-2"></i> Opiniões de Quem Comprou</h2>
+            
+            <div class="card shadow-sm my-4">
+                <div class="card-body">
+                    <h5 class="card-title">Deixe sua avaliação (Associação)</h5>
+                    <form action="#" method="POST" class="review-form">
+                        <div class="mb-3">
+                            <label for="nota" class="form-label">Nota (1 a 5):</label>
+                            <input type="number" name="nota" min="1" max="5" required class="form-control" style="width: 100px;">
+                        </div>
+                        <div class="mb-3">
+                            <label for="comentario" class="form-label">Comentário:</label>
+                            <textarea name="comentario" rows="3" class="form-control"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-dark">Enviar Avaliação</button>
+                    </form>
                 </div>
             </div>
 
-        </div>
-    </div>
-    
-    <div class="review-section" style="margin-top: 50px;">
-        <h2>Opiniões de Quem Comprou</h2>
-        
-        <div class="review-form-container" style="border: 1px solid #ccc; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
-            <h4>Deixe sua avaliação sobre o Produto:</h4>
-            
-            <form method="POST" action="{{ url_for('avaliar_produto', pid=pid) }}" class="review-form"> 
-                
-                {% if erro_avaliacao %} <p style="color: red; font-weight: bold;">Erro: {{ erro_avaliacao }}</p>
-                {% endif %}
-                
-                <label style="display: block; margin-bottom: 10px;">
-                    Nota (1 a 5): <input type="number" name="nota" min="1" max="5" required style="width: 50px;">
-                </label>
-                <textarea name="comentario" placeholder="Escreva seu comentário aqui..." rows="4" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;"></textarea>
-                <button type="submit" class="btn" style="background-color: gray; color: white; margin-top: 10px;">Enviar Avaliação</button>
-            </form>
-        </div>
-
-        {% for review in avaliacoes %}
-            <div class="review-item" style="border-bottom: 1px dashed #eee; padding-bottom: 15px; margin-bottom: 15px;">
-                <strong>Cliente ID {{ review.cliente_id }}</strong> - <span style="color: gold;">{{ "★" * review.nota }}</span>
-                <p style="font-style: italic; margin: 5px 0 0 0;">"{{ review.comentario }}"</p>
+            <div class="list-group">
+                {% for review in avaliacoes %}
+                    <div class="list-group-item list-group-item-action flex-column align-items-start">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">{{ review.nome }}</h5>
+                            <small class="text-warning">
+                                {% for i in range(review.nota) %}<i class="fas fa-star"></i>{% endfor %}
+                            </small>
+                        </div>
+                        <p class="mb-1 fst-italic">"{{ review.comentario }}"</p>
+                    </div>
+                {% endfor %}
             </div>
-        {% endfor %}
+        </div>
     </div>
 
-<style>
-    /* CSS ESPECÍFICO DESTA PÁGINA */
-    .product-page-layout { display: grid; grid-template-columns: 40% 60%; gap: 50px; }
-    .main-product-image { width: 100%; border-radius: 8px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); }
-    .thumbnails { display: flex; gap: 10px; margin-top: 15px; }
-    .thumbnail-item { width: 70px; height: 50px; border: 1px solid #ccc; border-radius: 4px; cursor: pointer; object-fit: cover; }
-    .final-price-tag { font-size: 2.8em; font-weight: 700; color: var(--primary-color); margin: 10px 0 10px 0; }
-    .product-characteristics { margin-top: 40px; padding: 15px; border: 1px solid #f0f0f0; border-radius: 8px; background-color: white; }
-    .info-column { padding-top: 10px; }
-    .rating-bar { display: flex; align-items: center; gap: 8px; }
-    .product-rating-large { font-size: 1.2em; }
-    .price-section { margin-top: 20px; }
-    .shipping-info { margin-top: 30px; }
-    .review-section { margin-top: 50px; }
-</style>
-{% endblock %}
+    {% endblock %}

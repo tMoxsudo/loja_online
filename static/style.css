@@ -1,0 +1,126 @@
+/* Define nossas cores personalizadas */
+:root {
+  --cor-primaria: #000;
+  --cor-secundaria: #ffcc00; /* O amarelo/dourado */
+  --cor-fundo-escuro: #212121;
+  --cor-texto-claro: #f0f0f0;
+  --cor-sucesso: #198754; /* Verde do Bootstrap */
+  --cor-perigo: #dc3545;  /* Vermelho do Bootstrap */
+}
+
+/* Aplica a cor de fundo escura no rodapé */
+.footer-custom {
+  background-color: var(--cor-fundo-escuro);
+}
+
+/* Deixa a marca da navbar com a cor secundária */
+.navbar-brand-custom {
+  color: var(--cor-secundaria) !important; /* !important força a cor */
+  font-weight: 700;
+}
+
+/* Deixa o botão de busca com a cor secundária */
+.btn-search-custom {
+  background-color: var(--cor-secundaria);
+  color: var(--cor-primaria);
+  font-weight: 700;
+}
+.btn-search-custom:hover {
+  background-color: #ffd633; /* Um pouco mais claro no hover */
+  color: var(--cor-primaria);
+}
+
+/* Estilo para o link de Admin na barra de categoria */
+.nav-link-admin {
+    color: var(--cor-perigo) !important;
+    font-weight: 700;
+}
+.top-category-bar {
+  background-color: var(--cor-fundo-escuro);
+}
+.top-category-bar .nav-link {
+  color: var(--cor-texto-claro); /* Texto claro */
+  font-size: 0.9em;
+  padding: 0.25rem 1rem; /* Deixa a barra mais fina */
+}
+.top-category-bar .nav-link:hover {
+  color: var(--cor-secundaria); /* Amarelo no hover */
+}
+.product-grid {
+    display: grid;
+    /* Cria colunas automáticas de no mínimo 250px */
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.product-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    overflow: hidden;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.product-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+}
+
+.category-tag {
+    background-color: var(--cor-fundo-escuro);
+    color: var(--cor-texto-claro);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8em;
+    font-weight: 600;
+    display: inline-block;
+    margin-bottom: 8px;
+}
+
+.promo-tag {
+    background-color: var(--cor-perigo);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8em;
+    font-weight: 600;
+    display: inline-block;
+    margin-left: 8px;
+}
+
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+    padding: 20px 0;
+}
+
+/* Garante que todos os cards tenham altura igual */
+.product-grid .product-card {
+    height: 100%;
+}
+
+/* Melhora a responsividade */
+@media (max-width: 768px) {
+    .product-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .product-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+}

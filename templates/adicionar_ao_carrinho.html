@@ -2,38 +2,56 @@
 {% block title %}Montar Carrinho{% endblock %}
 
 {% block content %}
-    <h2 style="color: var(--secondary-color);">Montar Novo Pedido/Carrinho</h2>
-    <p>Cliente Associado (Teste): <strong>{{ cliente.nome }}</strong> (ID: 1)</p>
-    <p>Selecione a quantidade desejada. Isso criará o objeto **Carrinho** (Associação) e os objetos **ItemCarrinho** (Composição).</p>
+<div class="container" style="max-width: 960px;">
 
-    <form method="POST" action="{{ url_for('adicionar_ao_carrinho_web') }}">
-        <table>
-            <thead>
-                <tr>
-                    <th>Nome do Produto</th>
-                    <th>Preço</th>
-                    <th>Frete (R$)</th>
-                    <th>Quantidade</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for pid, produto in produtos %}
-                <tr>
-                    <td>{{ produto.nome }}</td>
-                    <td>R$ {{ "%.2f"|format(produto.preco) }}</td>
-                    <td>R$ {{ "%.2f"|format(produto.calcular_frete()) }}</td>
-                    <td>
-                        <input type="number" name="qtde_{{ pid }}" min="0" value="0" style="width: 60px; text-align: center;">
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <a href="{{ url_for('index') }}" class="btn btn-outline-secondary mb-3">
+        <i class="fas fa-arrow-left me-2"></i> Voltar para o Dashboard
+    </a>
 
-        <button type="submit" class="btn success" style="margin-top: 25px;">
-            Criar Carrinho e Ir para o Checkout
-        </button>
-    </form>
-    
-    <a href="{{ url_for('index') }}" style="margin-top: 15px;">← Voltar para o Dashboard</a>
-{% endblock %}
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <h3 class="mb-0"><i class="fas fa-cart-plus me-2"></i>Montar Novo Pedido/Carrinho</h3>
+        </div>
+        <div class="card-body">
+            <p class="lead">Selecione as quantidades desejadas para criar o objeto **Carrinho** (Associação) e os **Itens** (Composição).</p>
+            <p>Cliente Associado (Teste): <strong>{{ cliente.nome }}</strong> (ID: 1)</p>
+            <hr>
+
+            <form method="POST" action="{{ url_for('adicionar_ao_carrinho_web') }}">
+                
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover align-middle">
+                        <thead class="table-dark">
+                            <tr>
+                                <th scope="col">Produto</th>
+                                <th scope="col">Preço</th>
+                                <th scope="col">Frete (Polimorfismo)</th>
+                                <th scope="col" style="width: 15%;">Quantidade</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for pid, produto in produtos %}
+                            <tr>
+                                <td>{{ produto.nome }}</td>
+                                <td>R$ {{ "%.2f"|format(produto.preco) }}</td>
+                                <td>R$ {{ "%.2f"|format(produto.calcular_frete()) }}</td>
+                                <td>
+                                    <input type="number" 
+                                           name="qtde_{{ pid }}" 
+                                           class="form-control form-control-sm text-center" 
+                                           min="0" 
+                                           value="0" 
+                                           style="max-width: 100px;">
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div> <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-success btn-lg fw-bold">
+                        <i class="fas fa-check-circle me-2"></i>
+                        Criar Carrinho e Ir para o Checkout
+                    </button>
+                </div>
+
+            </form> </div> </div> </div> {% endblock %}

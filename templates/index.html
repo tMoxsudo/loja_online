@@ -3,27 +3,20 @@
 
 {% block content %}
 
-    {% if erro_carrinho %}
-        <input type="hidden" id="aviso-carrinho-hidden" value="{{ aviso_carrinho }}">
-    {% endif %}
-
-    <div class="promo-section">
-        <h2 style="color: #E60014; border-bottom-color: #E60014;">🔥 PROMOÇÕES IMPERDÍVEIS</h2>
-        
-        <div class="promo-grid">
-            {% for pid, produto in produtos %}
-                {% if loop.index <= 5 %} 
-                    <a href="{{ url_for('detalhe_produto', pid=pid) }}" style="text-decoration: none; color: inherit;">
-                        {% include 'product_card.html' %} 
-                    </a>
-                {% endif %}
-            {% endfor %}
+    <div class="bg-light p-5 rounded-3 mb-4 shadow-sm">
+        <div class="container-fluid py-3">
+            <h1 class="display-5 fw-bold">Bem-vindo à TechNova Store</h1>
+            <p class="col-md-8 fs-4 text-muted">
+                Este é um projeto de demonstração de POO com Flask. 
+                Explore nossos produtos, adicione ao carrinho e veja conceitos como 
+                Herança, Polimorfismo e Composição em ação.
+            </p>
+            <a href="{{ url_for('busca') }}" class="btn btn-search-custom btn-lg fw-bold">
+                <i class="fas fa-search me-2"></i>Ver todos os produtos
+            </a>
         </div>
     </div>
-    
-    <hr style="margin: 40px 0;">
-
-    <h2 style="color: var(--primary-color);">Todos os Produtos (Geral)</h2>
+    <h2 style="color: var(--cor-primaria);"><i class="fas fa-star me-2"></i>Produtos em Destaque</h2>
     
     <div class="product-grid-5"> 
         {% for pid, produto in produtos %}
@@ -37,59 +30,51 @@
 
     {% if session.get('is_admin') %} 
     
-        <h2 style="color: #dc3545;">
-            ✅ PAINEL ADMINISTRATIVO ATIVO 
-            <a href="{{ url_for('admin_dashboard') }}" class="btn" style="background-color: #dc3545; color: white; padding: 5px 10px; font-size: 0.8em;">Gerenciar Produtos (CRUD)</a>
+        <h2 style="color: var(--cor-perigo);">
+            <i class="fas fa-shield-alt me-2"></i>PAINEL ADMINISTRATIVO ATIVO 
         </h2>
-        <p style="font-style: italic;">Estes dados são visíveis apenas para você, Admin.</p>
+        <p class="text-muted">Estes dados são visíveis apenas para você, Admin.</p>
         
-        <h3 style="font-weight: 500;">Clientes Cadastrados</h3>
-        <table style="margin-bottom: 25px;">
-            <thead>
-                <tr>
-                    <th>Cliente ID</th>
-                    <th>Nome (Herança)</th>
-                    <th>CPF</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for cid, cliente in clientes %}
-                <tr>
-                    <td>{{ cid }}</td>
-                    <td>{{ cliente.nome }}</td>
-                    <td>{{ cliente.cpf }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        
-        <h3 style="font-weight: 500;">Carrinhos/Pedidos em Aberto</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>Carrinho ID</th>
-                    <th>Status</th>
-                    <th>Cliente Associado</th>
-                    <th>Total</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for cid, carrinho in carrinhos %}
-                <tr>
-                    <td>{{ cid }}</td>
-                    <td>{{ carrinho.status }}</td>
-                    <td>{{ carrinho.cliente.nome }}</td>
-                    <td>R$ {{ "%.2f"|format(carrinho.calcular_total()) }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Clientes Cadastrados</h5>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover mb-0">
+                            <thead>
+                                <tr><th>ID</th><th>Nome (Herança)</th><th>CPF</th></tr>
+                            </thead>
+                            <tbody>
+                                {% for cid, cliente in clientes %}
+                                <tr>
+                                    <td>{{ cid }}</td>
+                                    <td>{{ cliente.nome }}</td>
+                                    <td>{{ cliente.cpf }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card shadow-sm">
+                    <div class="card-header">
+                        <h5 class="mb-0">Ações Rápidas</h5>
+                    </div>
+                    <div class="card-body">
+                        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-danger w-100">
+                            <i class="fas fa-cogs me-2"></i>Gerenciar Tudo
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
         
     {% else %}
-        <h2 style="color: #666;">Funcionalidades POO</h2>
-        <p>Acesse o login (👤) para iniciar sua jornada de compra ou ver o Painel Administrativo.</p>
-        
-    {% endif %}
+        {% endif %}
 
 {% endblock %}

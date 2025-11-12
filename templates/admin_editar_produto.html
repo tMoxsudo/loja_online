@@ -1,41 +1,83 @@
 {% extends "base.html" %}
-{% block title %}Editar Produto{% endblock %}
+{% block title %}
+    {% if pid == 'novo' %}
+        Adicionar Produto
+    {% else %}
+        Editar Produto
+    {% endif %}
+{% endblock %}
 
 {% block content %}
-    <h2 style="color: #dc3545;">Editar Produto ID: {{ pid }}</h2>
-    <p>Altere os atributos do objeto ProdutoFisico e salve a persistência.</p>
+<div class="container" style="max-width: 960px;">
 
-    <form method="POST" style="background-color: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 style="color: var(--cor-perigo);">
+            {% if pid == 'novo' %}
+                <i class="fas fa-plus-circle me-2"></i>Adicionar Novo Produto
+            {% else %}
+                <i class="fas fa-edit me-2"></i>Editar Produto ID: {{ pid }}
+            {% endif %}
+        </h2>
+        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary">
+            <i class="fas fa-times me-2"></i>Cancelar
+        </a>
+    </div>
+    <p class="lead text-muted">Altere os atributos do objeto ProdutoFisico e salve a persistência.</p>
+    <hr>
+
+    <div class="card shadow-sm">
+        <div class="card-body p-4 p-md-5">
             
-            <div class="form-group">
-                <label for="nome">Nome:</label>
-                <input type="text" name="nome" value="{{ produto.nome }}" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="preco">Preço:</label>
-                <input type="number" name="preco" step="0.01" value="{{ "%.2f"|format(produto.preco) }}" required>
-            </div>
+            <form method="POST">
+                <div class="row g-3">
+                    
+                    <div class="col-md-6">
+                        <label for="nome" class="form-label fw-bold">Nome:</label>
+                        <input type="text" class="form-control" id="nome" name="nome" 
+                               value="{{ produto.nome if produto else '' }}" required>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <label for="preco" class="form-label fw-bold">Preço (R$):</label>
+                        <input type="number" class="form-control" id="preco" name="preco" step="0.01" 
+                               value="{{ "%.2f"|format(produto.preco) if produto else '0.00' }}" required>
+                    </div>
 
-            <div class="form-group">
-                <label for="categoria">Categoria:</label>
-                <input type="text" name="categoria" value="{{ produto.categoria }}" required>
-            </div>
+                    <div class="col-md-6">
+                        <label for="categoria" class="form-label fw-bold">Categoria:</label>
+                        <input type="text" class="form-control" id="categoria" name="categoria" 
+                               value="{{ produto.categoria if produto else '' }}" required>
+                    </div>
 
-            <div class="form-group">
-                <label for="peso">Peso (kg):</label>
-                <input type="number" name="peso" step="0.1" value="{{ "%.1f"|format(produto.peso) }}" required>
-            </div>
-            
-            <div class="form-group" style="grid-column: span 2;">
-                <label for="imagem_url">URL da Imagem:</label>
-                <input type="text" name="imagem_url" value="{{ produto.imagem_url }}" required>
-                <img src="{{ produto.imagem_url }}" alt="Imagem Atual" style="width: 150px; margin-top: 10px; border: 1px solid #ccc; border-radius: 4px;"/>
-            </div>
-        </div>
+                    <div class="col-md-6">
+                        <label for="peso" class="form-label fw-bold">Peso (kg):</label>
+                        <input type="number" class="form-control" id="peso" name="peso" step="0.1" 
+                               value="{{ "%.1f"|format(produto.peso) if produto else '0.0' }}" required>
+                    </div>
+                    
+                    <div class="col-12">
+                        <label for="imagem_url" class="form-label fw-bold">URL da Imagem:</label>
+                        <input type="text" class="form-control" id="imagem_url" name="imagem_url" 
+                               value="{{ produto.imagem_url if produto else '' }}" required>
+                    </div>
+                    
+                    <div class="col-12 text-center">
+                        <label class="form-label">Preview:</label>
+                        <div>
+                            <img src="{{ produto.imagem_url if produto and produto.imagem_url else 'https://via.placeholder.com/300x200.png?text=Sem+Imagem' }}" 
+                                 alt="Imagem Atual" 
+                                 class="img-thumbnail" 
+                                 style="max-width: 300px; max-height: 200px; object-fit: contain;">
+                        </div>
+                    </div>
 
-        <button type="submit" class="btn success" style="margin-top: 30px;">Salvar Alterações</button>
-        <a href="{{ url_for('admin_dashboard') }}" style="margin-left: 15px; color: #dc3545;">Cancelar</a>
-    </form>
-{% endblock %}
+                    <div class="col-12 mt-4">
+                        <button type="submit" class="btn btn-success btn-lg w-100 fw-bold">
+                            <i class="fas fa-save me-2"></i>
+                            Salvar Alterações
+                        </button>
+                    </div>
+
+                </div> </form>
+
+        </div> </div> </div> {% endblock %}
